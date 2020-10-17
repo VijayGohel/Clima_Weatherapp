@@ -1,7 +1,11 @@
+import 'package:clima/services/networking.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:clima/services/location.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+const String appiKey = '9ad92fe0aa71d0aa442d8327623b2ecb';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -9,27 +13,31 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  double latitude, longitude;
+
   @override
   void initState() {
     super.initState();
 
-    getLocation();
-    getResponse();
+    getLocationData();
   }
 
-  void getLocation() async {
+  void getLocationData() async {
     Location location = Location();
     await location.getCurrentLocation();
-    print(location.latitude);
-    print(location.longitude);
-  }
+    latitude = location.latitude;
+    longitude = location.longitude;
 
-  void getResponse() async {
-    http.Response response = await http.get('http://google.com/');
-    if (response.statusCode == 200)
-      print(response.body);
-    else
-      print(response.statusCode);
+    NetworkHelper network = new NetworkHelper(
+        url:
+            'http://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$appiKey');
+    var decodedData = await network.getResponse();
+    var weatherId = decodedData['weather'][0]['id'];
+
+    var temp = decodedData['main']['temp'];
+
+    var nameCity = decodedData['name'];
+    print(weatherId + " " + temp + " " + nameCity);
   }
 
   @override
