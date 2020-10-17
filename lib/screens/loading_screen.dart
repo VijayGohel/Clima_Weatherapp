@@ -2,8 +2,7 @@ import 'package:clima/services/networking.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:clima/services/location.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 const String appiKey = '9ad92fe0aa71d0aa442d8327623b2ecb';
 
@@ -37,11 +36,19 @@ class _LoadingScreenState extends State<LoadingScreen> {
     var temp = decodedData['main']['temp'];
 
     var nameCity = decodedData['name'];
-    print(weatherId + " " + temp + " " + nameCity);
+    print('$weatherId $temp  $nameCity');
+    // print('$latitude  $longitude');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Center(
+        child: SpinKitDoubleBounce(
+          color: Colors.white,
+          size: 100,
+        ),
+      ),
+    );
   }
 }
