@@ -1,3 +1,4 @@
+import 'package:clima/screens/location_screen.dart';
 import 'package:clima/services/networking.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -38,6 +39,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
     var nameCity = decodedData['name'];
     print('$weatherId $temp  $nameCity');
     // print('$latitude  $longitude');
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return LocationScreen();
+        },
+      ),
+    );
   }
 
   @override
