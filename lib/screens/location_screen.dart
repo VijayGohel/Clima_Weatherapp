@@ -13,7 +13,7 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   int weatherId;
   int temprature;
-  String cityName, weatherIcon, message;
+  String cityName, weatherIcon, message, finalMessage;
 
   WeatherModel weather = WeatherModel();
 
@@ -25,6 +25,14 @@ class _LocationScreenState extends State<LocationScreen> {
 
   void getWeatherData(dynamic weatherData) {
     setState(() {
+      if (weatherData == null) {
+        temprature = 0;
+        message = 'Unable to get location !';
+        weatherIcon = '';
+        cityName = '';
+        finalMessage = '$message';
+        return;
+      }
       weatherId = weatherData['weather'][0]['id'];
       double temp = weatherData['main']['temp'];
       temprature = temp.toInt();
@@ -32,6 +40,7 @@ class _LocationScreenState extends State<LocationScreen> {
       weatherIcon = weather.getWeatherIcon(weatherId);
       message = weather.getMessage(temprature);
       cityName = weatherData['name'];
+      finalMessage = '$message in $cityName!';
     });
   }
 
@@ -57,7 +66,11 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var weatherData =
+                          await WeatherModel().getLocationWeather();
+                      getWeatherData(weatherData);
+                    },
                     child: Icon(
                       Icons.near_me,
                       size: 50.0,
@@ -90,7 +103,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "$message in $cityName!",
+                  finalMessage,
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
