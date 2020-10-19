@@ -14,13 +14,14 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   int weatherId;
   int temprature;
-  String cityName, weatherIcon, message, finalMessage;
+  String cityName, weatherIcon, message, finalMessage, returnedCityName;
 
   WeatherModel weather = WeatherModel();
 
   @override
   void initState() {
     super.initState();
+
     getWeatherData(widget.weatherData);
   }
 
@@ -78,8 +79,8 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {
-                      Navigator.push(
+                    onPressed: () async {
+                      returnedCityName = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
@@ -87,6 +88,11 @@ class _LocationScreenState extends State<LocationScreen> {
                           },
                         ),
                       );
+                      if (returnedCityName != null) {
+                        var weatherData =
+                            await weather.getCityWeather(returnedCityName);
+                        getWeatherData(weatherData);
+                      }
                     },
                     child: Icon(
                       Icons.location_city,
